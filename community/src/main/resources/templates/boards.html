@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>게시판 목록</h2>
+    </div>
+    <h4 class="mb-3" th:text="|닉네임: ${loginMember.nickname}|">로그인 사용자 이름</h4>
+
+    <!--
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary float-end"
+                        onclick="location.href='addForm.html'"
+                        th:onclick="|location.href='@{/items/add}'|"
+                        type="button">상품 등록
+                </button>
+            </div>
+        </div>
+    -->
+    <form th:object="${boardSearch}" method="get" class="form-inline">
+        <div class="row">
+            <div class="col">
+                <input type="text" th:field="*{title}" class="form-control" placeholder="제목"/>
+            </div>
+            <div class="col">
+                <input type="text" th:field="*{nickname}" class="form-control" placeholder="글쓴이"/>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-secondary mb-2">검색</button>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <div class="col">
+                    <button class="btn btn-primary float-end"
+                            onclick="location.href='addForm.html'"
+                            th:onclick="|location.href='@{/boards/add}'|"
+                            type="button">글쓰기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <hr class="my-4">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>글 제목</th>
+                <th>글쓴이</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${boards}">
+                <td style="width: 80%">
+                    <a href="board.html" th:href="@{|/boards/${board.boardId}|}" th:text="${board.boardId}">글 제목</a>
+                </td>
+                <td th:text="${board.member.getNickname()}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</div> <!-- /container -->
+
+</body>
