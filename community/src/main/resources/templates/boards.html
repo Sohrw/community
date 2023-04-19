@@ -63,7 +63,7 @@
             <tbody>
             <tr th:each="board : ${boards}">
                 <td style="width: 80%">
-                    <a href="board.html" th:href="@{|/boards/${board.boardId}|}" th:text="${board.boardId}">글 제목</a>
+                    <a href="board.html" th:href="@{|/boards/${board.boardId}|}" th:text="${board.title}">글 제목</a>
                 </td>
                 <td th:text="${board.member.getNickname()}"></td>
 
@@ -71,6 +71,11 @@
             </tbody>
         </table>
     </div>
+    <form th:action="@{/logout}" method="post">
+        <button class="w-100 btn btn-dark btn-lg" type="submit">
+            로그아웃
+        </button>
+    </form>
 
 
 </div> <!-- /container -->

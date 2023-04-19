@@ -87,4 +87,10 @@ public class BoardController {
         boardService.update(boardId, boardUpdateDto);
         return "redirect:/boards/{boardId}";
     }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        sessionManager.expire(request);
+        return "redirect:/home";
+    }
 }

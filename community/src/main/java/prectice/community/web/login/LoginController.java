@@ -54,7 +54,7 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
 
-        return "redirect:" + redirectURL;
+        return "redirect:/boards";
 
 
     }
@@ -62,7 +62,7 @@ public class LoginController {
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
         sessionManager.expire(request);
-        return "redirect:/";
+        return "redirect:/home";
     }
 
     private void expireCookie(HttpServletResponse response, String cookieName) {
