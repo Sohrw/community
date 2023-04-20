@@ -35,11 +35,10 @@ public class BoardController {
     private final MemberServiceImpl memberServiceImpl;
 
     @GetMapping
-    public String boards(@ModelAttribute("boardSearch") BoardSearchCond boardSearchCond, Model model, HttpServletRequest request) {
+    public String boards(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute("boardSearch") BoardSearchCond boardSearchCond, Model model, HttpServletRequest request) {
         List<Board> boards = boardService.findBoards(boardSearchCond);
-        HttpSession session = request.getSession();
 
-        model.addAttribute("loginMember", session.getAttribute(SessionConst.LOGIN_MEMBER));
+        model.addAttribute("loginMember", loginMember);
         model.addAttribute("boards", boards);
         return "boards";
     }
@@ -58,7 +57,7 @@ public class BoardController {
     }
 
     @PostMapping("/add")
-    public String writeBoard(@ModelAttribute Board board, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String writeBoard(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute Board board, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         Board notSaveBoard = new Board();
 
 
@@ -66,9 +65,11 @@ public class BoardController {
 
         notSaveBoard.setTitle(board.getTitle());
         notSaveBoard.setContent(board.getContent());
-        HttpSession session = request.getSession();
-        Member attribute = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        notSaveBoard.setMember(attribute);
+//        HttpSession session = request.getSession();
+//        Member attribute = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+//        Object session1 = sessionManager.getSession(request);
+
+        notSaveBoard.setMember(loginMember);
         Board board1 = boardService.save(notSaveBoard);
         redirectAttributes.addAttribute("boardId", board1.getBoardId());
         redirectAttributes.addAttribute("status", true);
@@ -90,7 +91,16 @@ public class BoardController {
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
-        sessionManager.expire(request);
-        return "redirect:/home";
+        HttpSession session = request.getSession();
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/{boardId}/delete")
+    public String delete(@PathVariable Long boardId) {
+        boardService.delete(boardId);
+        return "redirect:/boards";
     }
 }

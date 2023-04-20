@@ -13,6 +13,7 @@ import prectice.community.repository.member.MemberRepository;
 import prectice.community.web.session.SessionManager;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Slf4j

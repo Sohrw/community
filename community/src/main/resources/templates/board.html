@@ -47,6 +47,13 @@
               th:onclick="|location.href='@{/boards}'|"
               type="button">목록으로</button>
     </div>
+    <div class="col">
+    <form th:action="@{/boards/{boardId}/delete(boardId=${board.boardId})}" method="post">
+      <button class="w-100 btn btn-secondary btn-lg"
+              type="submit">삭제하기</button>
+    </form>
+  </div>
+
   </div>
 
 </div> <!-- /container -->

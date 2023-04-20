@@ -13,6 +13,7 @@ import prectice.community.repository.member.MemberRepositoryImpl;
 import prectice.community.web.session.SessionManager;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,12 +30,16 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public Board save(Board board) {
+
+        board.setRegisterDate(LocalDateTime.now().toString());
+
         return boardRepository.save(board);
     }
 
     @Override
     public void update(Long boardId, BoardUpdateDto updateParam) {
         Board findBoard = findById(boardId).orElseThrow();
+        findBoard.setUpdateDate(LocalDateTime.now().toString());
         findBoard.setTitle(updateParam.getTitle());
         findBoard.setContent(updateParam.getContent());
     }
@@ -49,4 +54,11 @@ public class BoardServiceImpl implements BoardService{
     public List<Board> findBoards(BoardSearchCond boardSearchCond) {
         return boardRepositoryImpl.findAll(boardSearchCond);
     }
+
+    @Override
+    public void delete(Long boardId) {
+        boardRepository.deleteById(boardId);
+    }
+
+
 }

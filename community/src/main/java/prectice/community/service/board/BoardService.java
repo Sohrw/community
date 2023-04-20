@@ -18,4 +18,6 @@ public interface BoardService {
 
     List<Board> findBoards(BoardSearchCond boardSearchCond);
 
+    void delete(Long boardId);
+
 }
