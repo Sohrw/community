@@ -31,8 +31,28 @@
 
     </textarea>
   </div>
+  <div class="col">
+    <ul class="list-group list-group-flush">
 
-  <hr class="my-4">
+      <li th:each="reply : ${reply}" class="list-group-item">
+        <p th:text="${reply.replyWriter.nickname}">작성자</p>
+        <p th:text="${reply.replyContent}">댓글 내용</p>
+      </li>
+    </ul>
+  </div>
+  <form role="form" class="row my-3" th:object="${replyForm}" th:action="@{|/boards/${boardId}/reply|}" method="post">
+    <div class="my-3">
+      <input type="text" th:field="*{content}" name="reply_content" placeholder="댓글 내용" class="form-control" required> <!-- 댓글 내용 입력 필드 -->
+    </div>
+    <div class="">
+      <input class="btn btn-primary float-end" type="submit" value="댓글 작성"> <!-- 댓글 작성 버튼 -->
+    </div>
+
+  </form>
+
+  <hr class="my-4 mt-lg-5">
+
+
 
   <div class="row">
     <div class="col">

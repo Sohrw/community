@@ -24,9 +24,7 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
     private final BoardRepositoryImpl boardRepositoryImpl;
-    private final MemberRepositoryImpl memberRepositoryImpl;
 
-    private final SessionManager sessionManager;
 
     @Override
     public Board save(Board board) {

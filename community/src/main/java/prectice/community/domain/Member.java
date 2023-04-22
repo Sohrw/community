@@ -27,6 +27,9 @@ public class Member {
     @JsonIgnore
     private List<Board> boards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "replyWriter")
+    private List<Reply> replies = new ArrayList<>();
+
     public Member() {
 
     }

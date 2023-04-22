@@ -1,20 +1,23 @@
 package prectice.community.domain;
 
 import lombok.Data;
+import org.apache.ibatis.annotations.One;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
 public class Reply {
 
-    private Long boardId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @Id @GeneratedValue
     private Long replyId;
-    private String replyWriter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member replyWriter;
     private String replyContent;
     private String registerDate;
     private String updateDate;
@@ -23,14 +26,14 @@ public class Reply {
     public Reply() {}
 
     public Reply
-            (Long boardId,
+            (Board board,
              Long replyId,
-             String replyWriter,
+             Member replyWriter,
              String replyContent,
              String registerDate,
              String updateDate,
              String deleteDate) {
-        this.boardId = boardId;
+        this.board = board;
         this.replyId = replyId;
         this.replyWriter = replyWriter;
         this.replyContent = replyContent;
