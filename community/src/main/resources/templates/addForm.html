@@ -9,6 +9,9 @@
       max-width: 560px;
     }
   </style>
+
+  <!-- JavaScript를 사용하여 AJAX 통신을 수행하는 부분 -->
+
 </head>
 <body>
 
@@ -18,15 +21,19 @@
     <h2>글쓰기</h2>
   </div>
 
-  <form action="board.html" th:action method="post">
+  <form action="board.html" th:action method="post" th:object="${form}" onsubmit="saveContent(); return false;">
     <div >
-      <label for="title"></label>
-      <input type="text" id="title" name="title" class="form-control">
+      <label th:for="title"></label>
+      <input type="text" th:field="*{title}" id="title" name="title" class="form-control">
     </div>
 
-    <div class="mt-3">
-      <label for="content"></label>
-      <textarea type="text" id="content" name="content" class="form-control"></textarea>
+    <div class="h-75">
+
+      <div class="h-75">
+        <div contenteditable="true" role="textbox" aria-multiline="true" class="form-control my-3"
+             style="height: 300px; border: 1px solid gray" id="content">
+        </div>
+      </div>
     </div>
 
     <hr class="my-4">
@@ -45,6 +52,50 @@
 
   </form>
 
+
 </div> <!-- /container -->
+<script>
+  // contenteditable인 div 요소의 내용을 hidden field에 저장하는 함수
+  function saveContent() {
+    // 폼 데이터 가져오기
+    const title = document.getElementById('title').value;
+    const content = document.getElementById('content').innerText; // 또는 textContent로 변경
+
+    // JSON 데이터 생성
+    const requestBody = {
+      title: title,
+      content: content
+    };
+
+    // AJAX 요청 보내기
+    fetch('/boards/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.boardId) {
+                // boardId가 있는 경우에 처리 로직
+                window.location.replace('/boards/' + data.boardId);
+                console.log(data);
+              } else {
+                // boardId가 없는 경우에 처리 로직
+                console.error('boardId not found in response.');
+                console.log(data);
+              }
+            })
+            .catch(error => {
+              // 오류 처리 로직
+              console.error('Failed to save board.', error);
+            });
+
+    // form 요소의 제출 막기
+    return false;
+  }
+</script>
 </body>
+
 </html>

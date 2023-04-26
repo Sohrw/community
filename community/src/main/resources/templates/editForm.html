@@ -9,40 +9,95 @@
       max-width: 560px;
     }
   </style>
+
+  <!-- JavaScript를 사용하여 AJAX 통신을 수행하는 부분 -->
+
 </head>
 <body>
 
 <div class="container">
 
   <div class="py-5 text-center">
-    <h2>글 수정하기</h2>
+    <h2>글 수정</h2>
   </div>
 
-  <form action="board.html" th:action method="post">
+  <form action="board.html" th:action method="post" th:object="${board}" onsubmit="saveContent(); return false;">
     <div >
-      <input type="text" id="title" name="title" class="form-control" value="title" th:value="${board.title}">
+      <label th:for="title"></label>
+      <input type="text" th:field="*{title}" id="title" name="title" class="form-control" th:value="${board.title}">
     </div>
 
-    <div class="my-3">
+    <div class="h-75">
 
-    <textarea type="text" id="content" name="content" class="form-control" value="content" th:value="${board.content}"></textarea>
+      <div class="h-75">
+        <div contenteditable="true" role="textbox" aria-multiline="true" class="form-control my-3"
+             style="height: 300px; border: 1px solid gray" id="content" th:field="*{content}" th:text="*{content}">
+        </div>
+      </div>
     </div>
 
+    <hr class="my-4">
 
     <div class="row">
       <div class="col">
-        <button class="w-100 btn btn-primary btn-lg" type="submit">수정</button>
+        <button class="w-100 btn btn-primary btn-lg" type="submit">글 수정</button>
       </div>
       <div class="col">
         <button class="w-100 btn btn-secondary btn-lg"
-                onclick="location.href='boards.html'"
-                th:onclick="|location.href='@{/boards/{boardId}(boardId=${board.boardId})}'|"
+                onclick="location.href='board.html'"
+                th:onclick="|location.href='@{'/boards/' + ${boardId}}'|"
                 type="button">취소</button>
       </div>
     </div>
 
   </form>
 
+
 </div> <!-- /container -->
+<script>
+  // contenteditable인 div 요소의 내용을 hidden field에 저장하는 함수
+  function saveContent() {
+    // 폼 데이터 가져오기
+    const title = document.getElementById('title').value;
+    const content = document.getElementById('content').innerText; // 또는 textContent로 변경
+    const currentUrl = window.location.href;
+    const boardId = currentUrl.split('/').slice(-2, -1)[0];
+
+    // JSON 데이터 생성
+    const requestBody = {
+      title: title,
+      content: content
+    };
+
+    // AJAX 요청 보내기
+    fetch(`/boards/${boardId}/edit`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.boardId) {
+                // boardId가 있는 경우에 처리 로직
+                window.location.replace('/boards/' + data.boardId);
+                console.log(data);
+              } else {
+                // boardId가 없는 경우에 처리 로직
+                console.error('boardId not found in response.');
+                console.log(data);
+              }
+            })
+            .catch(error => {
+              // 오류 처리 로직
+              console.error('Failed to save board.', error);
+            });
+
+    // form 요소의 제출 막기
+    return false;
+  }
+</script>
 </body>
+
 </html>

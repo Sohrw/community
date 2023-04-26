@@ -2,10 +2,12 @@ package prectice.community.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import prectice.community.domain.Board;
 import prectice.community.domain.Member;
 import prectice.community.domain.Reply;
@@ -15,16 +17,14 @@ import prectice.community.repository.reply.ReplySearchCond;
 import prectice.community.repository.reply.ReplyUpdateDto;
 import prectice.community.service.board.BoardService;
 import prectice.community.service.board.BoardServiceImpl;
-import prectice.community.service.login.LoginService;
-import prectice.community.service.member.MemberService;
-import prectice.community.service.member.MemberServiceImpl;
 import prectice.community.service.reply.ReplyService;
 import prectice.community.service.reply.ReplyServiceImpl;
-import prectice.community.web.session.SessionManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -35,6 +35,7 @@ public class BoardController {
 
 
     private final BoardService boardService;
+    private final BoardServiceImpl boardServiceImpl;
     private final ReplyService replyService;
     private final ReplyServiceImpl replyServiceImpl;
 
@@ -60,42 +61,54 @@ public class BoardController {
 
     @GetMapping("/add")
     public String writeForm(Model model) {
-        model.addAttribute("form", new BoardSearchCond());
+        BoardSearchCond boardSearchCond = new BoardSearchCond();
+        model.addAttribute("form", boardSearchCond);
         return "addForm";
     }
 
-    @PostMapping("/add")
-    public String writeBoard(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             @ModelAttribute Board board, RedirectAttributes redirectAttributes) {
+    @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
+    public ResponseEntity<?> writeBoard(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                                        @ModelAttribute Board board, RedirectAttributes redirectAttributes,
+                                        @RequestBody Board requestBody) {
+        String title = requestBody.getTitle(); // 클라이언트로부터 받은 JSON 데이터에서 "title" 필드 값을 추출
+        String content = requestBody.getContent(); // 클라이언트로부터 받은 JSON 데이터에서 "content" 필드 값을 추출
+
         Board notSaveBoard = new Board();
-
-
-        notSaveBoard.setBoardId(board.getBoardId());
-
-        notSaveBoard.setTitle(board.getTitle());
-        notSaveBoard.setContent(board.getContent());
-//        HttpSession session = request.getSession();
-//        Member attribute = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-//        Object session1 = sessionManager.getSession(request);
-
+        notSaveBoard.setTitle(title);
+        notSaveBoard.setContent(content);
         notSaveBoard.setMember(loginMember);
-        Board board1 = boardService.save(notSaveBoard);
-        redirectAttributes.addAttribute("boardId", board1.getBoardId());
-        redirectAttributes.addAttribute("status", true);
-        return "redirect:/boards/{boardId}";
+
+        Board savedBoard = boardService.save(notSaveBoard);
+        Long boardId = savedBoard.getBoardId();
+
+        // 클라이언트로 전송할 응답 데이터에 "boardId" 필드를 추가
+        Map<String, Object> response = new HashMap<>();
+        response.put("boardId", boardId);
+
+        return ResponseEntity.ok(response); // ResponseEntity를 사용하여 응답 데이터를 전송
     }
 
     @GetMapping("/{boardId}/edit")
     public String editForm(@PathVariable Long boardId, Model model) {
-        Board board = boardService.findById(boardId).get();
+        Board board = boardServiceImpl.findById(boardId).get();
         model.addAttribute("board", board);
         return "editForm";
     }
 
-    @PostMapping("/{boardId}/edit")
-    public String edit(@PathVariable Long boardId, @ModelAttribute BoardUpdateDto boardUpdateDto) {
-        boardService.update(boardId, boardUpdateDto);
-        return "redirect:/boards/{boardId}";
+
+    @PostMapping(value = "/{boardId}/edit", consumes = "application/json;charset=UTF-8")
+    public ResponseEntity<?> edit(@PathVariable Long boardId, @RequestBody BoardUpdateDto requestBody) {
+        String title = requestBody.getTitle(); // 클라이언트로부터 받은 JSON 데이터에서 "title" 필드 값을 추출
+        String content = requestBody.getContent(); // 클라이언트로부터 받은 JSON 데이터에서 "content" 필드 값을 추출
+
+        BoardUpdateDto notUpdateBoard = new BoardUpdateDto();
+        notUpdateBoard.setContent(content);
+        notUpdateBoard.setTitle(title);
+        boardServiceImpl.update(boardId, notUpdateBoard);
+        // 응답 데이터와 상태코드 등을 ResponseEntity 객체로 감싸서 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("boardId", boardId);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
