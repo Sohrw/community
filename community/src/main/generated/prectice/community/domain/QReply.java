@@ -34,6 +34,8 @@ public class QReply extends EntityPathBase<Reply> {
 
     public final QMember replyWriter;
 
+    public final ListPath<Rereply, QRereply> rereplyList = this.<Rereply, QRereply>createList("rereplyList", Rereply.class, QRereply.class, PathInits.DIRECT2);
+
     public final StringPath updateDate = createString("updateDate");
 
     public QReply(String variable) {

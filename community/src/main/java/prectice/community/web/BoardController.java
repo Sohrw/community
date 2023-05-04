@@ -11,14 +11,18 @@ import org.springframework.web.servlet.view.RedirectView;
 import prectice.community.domain.Board;
 import prectice.community.domain.Member;
 import prectice.community.domain.Reply;
+import prectice.community.domain.Rereply;
 import prectice.community.repository.board.BoardSearchCond;
 import prectice.community.repository.board.BoardUpdateDto;
 import prectice.community.repository.reply.ReplySearchCond;
 import prectice.community.repository.reply.ReplyUpdateDto;
+import prectice.community.repository.rereply.RereplySearchCond;
+import prectice.community.repository.rereply.RereplyUpdateDto;
 import prectice.community.service.board.BoardService;
 import prectice.community.service.board.BoardServiceImpl;
 import prectice.community.service.reply.ReplyService;
 import prectice.community.service.reply.ReplyServiceImpl;
+import prectice.community.service.rereply.RereplyService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,6 +42,8 @@ public class BoardController {
     private final BoardServiceImpl boardServiceImpl;
     private final ReplyService replyService;
     private final ReplyServiceImpl replyServiceImpl;
+    private final RereplyService rereplyService;
+
 
     @GetMapping
     public String boards(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute("boardSearch") BoardSearchCond boardSearchCond, Model model) {
@@ -49,13 +55,17 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public String board(@PathVariable long boardId, @ModelAttribute ReplySearchCond replySearchCond, Model model) {
+    public String board(@PathVariable long boardId, @ModelAttribute ReplySearchCond replySearchCond, @ModelAttribute RereplySearchCond rereplySearchCond, Model model) {
         Board board = boardService.findById(boardId).get();
         List<Reply> reply = replyService.findReply(replySearchCond);
+        List<Rereply> rereplys = rereplyService.findRereplys(rereplySearchCond);
         ReplyUpdateDto form = new ReplyUpdateDto();
+        RereplyUpdateDto rereplyForm = new RereplyUpdateDto();
         model.addAttribute("replyForm", form);
         model.addAttribute("board", board);
         model.addAttribute("reply", reply);
+        model.addAttribute("rereplyForm", rereplyForm);
+        model.addAttribute("rereply", rereplys);
         return "board";
     }
 
@@ -70,8 +80,8 @@ public class BoardController {
     public ResponseEntity<?> writeBoard(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                                         @ModelAttribute Board board, RedirectAttributes redirectAttributes,
                                         @RequestBody Board requestBody) {
-        String title = requestBody.getTitle(); // 클라이언트로부터 받은 JSON 데이터에서 "title" 필드 값을 추출
-        String content = requestBody.getContent(); // 클라이언트로부터 받은 JSON 데이터에서 "content" 필드 값을 추출
+        String title = requestBody.getTitle();
+        String content = requestBody.getContent();
 
         Board notSaveBoard = new Board();
         notSaveBoard.setTitle(title);
@@ -81,11 +91,11 @@ public class BoardController {
         Board savedBoard = boardService.save(notSaveBoard);
         Long boardId = savedBoard.getBoardId();
 
-        // 클라이언트로 전송할 응답 데이터에 "boardId" 필드를 추가
+
         Map<String, Object> response = new HashMap<>();
         response.put("boardId", boardId);
 
-        return ResponseEntity.ok(response); // ResponseEntity를 사용하여 응답 데이터를 전송
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{boardId}/edit")
@@ -131,13 +141,30 @@ public class BoardController {
     public String addReply(RedirectAttributes redirectAttributes, @PathVariable Long boardId,
                            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                            HttpServletRequest request,
+                           @RequestParam(name = "parentId", required = false) Long parentId,
                            @ModelAttribute("replyForm") ReplyUpdateDto reply) {
         Optional<Board> findBoard = boardService.findById(boardId);
         Reply addReply = new Reply();
         addReply.setReplyContent(reply.getContent());
         addReply.setReplyWriter(loginMember);
         addReply.setBoard(findBoard.get());
+
         replyService.save(addReply);
+        return "redirect:/boards/{boardId}/";
+    }
+
+    @PostMapping("/{boardId}/reply/{replyId}/rereply")
+    public String addRereply(RedirectAttributes redirectAttributes, @PathVariable Long boardId,
+                             @PathVariable Long replyId,
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                             HttpServletRequest request,
+                             @ModelAttribute("rereplyForm") RereplyUpdateDto rereplyForm) {
+        Optional<Reply> findReply = replyService.findById(replyId);
+        Rereply addRereply = new Rereply();
+        addRereply.setRereplyContent(rereplyForm.getContent());
+        addRereply.setRereplyMember(loginMember);
+        addRereply.setOriginReply(findReply.get());
+        rereplyService.save(addRereply);
         return "redirect:/boards/{boardId}/";
     }
 }

@@ -28,8 +28,12 @@ public class Member {
     private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "replyWriter")
+    @JsonIgnore
     private List<Reply> replies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "rereplyMember")
+    @JsonIgnore
+    private List<Rereply> rereplyList = new ArrayList<>();
     public Member() {
 
     }

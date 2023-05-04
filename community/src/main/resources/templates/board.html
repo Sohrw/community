@@ -38,10 +38,26 @@
   <div class="col">
     <ul class="list-group list-group-flush">
 
-      <li th:each="reply : ${reply}" class="list-group-item">
+      <li id="replyList" th:each="reply : ${reply}" class="list-group-item">
         <p th:text="${reply.replyWriter.nickname}">작성자</p>
         <p th:text="${reply.replyContent}">댓글 내용</p>
+        <ul class="list-group list-group-flush" th:if="${reply.rereplyList}">
+          <!-- 대댓글이 있으면 대댓글 리스트를 보여줌 -->
+          <li th:each="rereply : ${reply.rereplyList}" class="list-group-item ml-3 border-left">
+            <p th:text="${rereply.rereplyMember.nickname}">작성자</p>
+            <p th:text="${rereply.rereplyContent}">댓글 내용</p>
+          </li>
+        </ul>
+        <button class="reply-toggle-btn">대댓글 작성</button>
+        <form th:action="@{|/boards/${boardId}/reply/${reply.replyId}/rereply|}" th:object="${rereplyForm}" method="post" class="ml-3 mt-3" style="display: none">
+          <!-- 대댓글 작성 폼 -->
+          <div class="form-group">
+            <input th:field="*{content}" class="form-control" rows="3" placeholder="댓글 내용" required />
+          </div>
+          <button type="submit" class="btn btn-primary">대댓글 등록</button>
+        </form>
       </li>
+
     </ul>
   </div>
   <form role="form" class="row my-3" th:object="${replyForm}" th:action="@{|/boards/${boardId}/reply|}" method="post">
@@ -86,6 +102,17 @@
   var contentDiv = document.getElementById('content');
   var content = contentDiv.getAttribute('content');
   contentDiv.innerText = content;
+  const toggleBtns = document.querySelectorAll('.reply-toggle-btn');
+  toggleBtns.forEach(toggleBtn => {
+    toggleBtn.addEventListener('click', () => {
+      const replyForm = toggleBtn.nextElementSibling;
+      if (replyForm.style.display === 'none') {
+        replyForm.style.display = 'block';
+      } else {
+        replyForm.style.display = 'none';
+      }
+    });
+  });
 </script>
 </body>
 </html>

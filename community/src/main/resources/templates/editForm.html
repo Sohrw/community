@@ -55,11 +55,11 @@
 
 </div> <!-- /container -->
 <script>
-  // contenteditable인 div 요소의 내용을 hidden field에 저장하는 함수
+
   function saveContent() {
     // 폼 데이터 가져오기
     const title = document.getElementById('title').value;
-    const content = document.getElementById('content').innerText; // 또는 textContent로 변경
+    const content = document.getElementById('content').innerText;
     const currentUrl = window.location.href;
     const boardId = currentUrl.split('/').slice(-2, -1)[0];
 

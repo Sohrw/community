@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.ibatis.annotations.One;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -18,6 +19,9 @@ public class Reply {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member replyWriter;
+
+    @OneToMany(mappedBy = "originReply")
+    private List<Rereply> rereplyList;
     private String replyContent;
     private String registerDate;
     private String updateDate;
