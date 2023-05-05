@@ -99,8 +99,14 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}/edit")
-    public String editForm(@PathVariable Long boardId, Model model) {
+    public String editForm(@PathVariable Long boardId, Model model,
+                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+
+
         Board board = boardServiceImpl.findById(boardId).get();
+        if (loginMember.getMemberId() != board.getMember().getMemberId()) {
+            return "redirect:/error/403";
+        }
         model.addAttribute("board", board);
         return "editForm";
     }
@@ -131,7 +137,12 @@ public class BoardController {
     }
 
     @PostMapping("/{boardId}/delete")
-    public String delete(@PathVariable Long boardId) {
+    public String delete(@PathVariable Long boardId,@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        Board board1 = boardServiceImpl.findById(boardId).get();
+        if (board1.getMember().getMemberId() != loginMember.getMemberId()) {
+            return "redirect:/error/403";
+        }
+
         boardService.delete(boardId);
         return "redirect:/boards";
     }
