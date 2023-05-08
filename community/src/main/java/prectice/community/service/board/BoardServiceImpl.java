@@ -63,4 +63,9 @@ public class BoardServiceImpl implements BoardService{
         int boardLike = board.getBoardLike() + 1;
         board.setBoardLike(boardLike);
     }
+
+    public void increaseViewCount(Long boardId) {
+        Board board = boardRepository.findById(boardId).get();
+        board.setBoardViewCount(board.getBoardViewCount() + 1);
+    }
 }

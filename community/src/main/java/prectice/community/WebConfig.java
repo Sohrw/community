@@ -4,7 +4,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import prectice.community.service.board.BoardServiceImpl;
 import prectice.community.web.argumentresolver.LoginMemberArgumentResolver;
 import prectice.community.web.filter.LogFilter;
 import prectice.community.web.filter.LoginCheckFilter;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new LoginMemberArgumentResolver());

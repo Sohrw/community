@@ -32,6 +32,8 @@ public class QRereply extends EntityPathBase<Rereply> {
 
     public final NumberPath<Long> rereplyId = createNumber("rereplyId", Long.class);
 
+    public final NumberPath<Integer> rereplyLike = createNumber("rereplyLike", Integer.class);
+
     public final QMember rereplyMember;
 
     public final StringPath updateDate = createString("updateDate");

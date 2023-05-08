@@ -36,8 +36,11 @@
     </div>
   </div>
   <div class="my-3 justify-content-center" style="display : flex; justify-content: center;align-items: center; margin: auto; ">
-    <button class="btn btn-primary" style="width: 100px; margin-right: 25px ">추천</button>
-    <p>1</p>
+    <form th:action="@{|/boards/${boardId}/boardLike|}" method="post">
+      <input type="hidden" name="boardId" th:value="${board.boardId}" />
+      <button type="submit" class="btn btn-primary" style="width: 100px; margin-right: 25px ">추천</button>
+    </form>
+    <p th:text="${board.boardLike}">0</p>
   </div>
 
   <div class="col">

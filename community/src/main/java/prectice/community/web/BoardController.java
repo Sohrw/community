@@ -66,6 +66,7 @@ public class BoardController {
         model.addAttribute("reply", reply);
         model.addAttribute("rereplyForm", rereplyForm);
         model.addAttribute("rereply", rereplys);
+        boardServiceImpl.increaseViewCount(boardId);
         return "board";
     }
 
@@ -73,7 +74,7 @@ public class BoardController {
     public String addBoardLike(@PathVariable long boardId) {
         boardServiceImpl.addLike(boardId);
 
-        return "redirect:/{boardId}";
+        return "redirect:/boards/{boardId}";
     }
 
     @GetMapping("/add")

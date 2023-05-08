@@ -67,9 +67,9 @@
                 <td style="width: 60%">
                     <a href="board.html" th:href="@{|/boards/${board.boardId}|}" th:text="${board.title}">글 제목</a>
                 </td>
-                <td th:text="${board.getBoardLike()}">작성자</td>
-                <td th:text="${board.getBoardViewCount()}">-1</td>
-                <td th:text="${board.member.getNickname()}">-1</td>
+                <td th:text="${board.member.getNickname()}">작성자</td>
+                <td th:text="${board.getBoardLike()}"></td>
+                <td th:text="${board.getBoardViewCount()}"></td>
 
             </tr>
             </tbody>
