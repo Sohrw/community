@@ -73,7 +73,7 @@ public class BoardController {
     @PostMapping({"/{boardId}/boardLike"})
     public String addBoardLike(@PathVariable long boardId) {
         boardServiceImpl.addLike(boardId);
-
+        boardServiceImpl.decreaseViewCount(boardId);
         return "redirect:/boards/{boardId}";
     }
 

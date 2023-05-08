@@ -68,4 +68,9 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardId).get();
         board.setBoardViewCount(board.getBoardViewCount() + 1);
     }
+
+    public void decreaseViewCount(Long boardId) {
+        Board board = boardRepository.findById(boardId).get();
+        board.setBoardViewCount(board.getBoardViewCount() - 1);
+    }
 }
