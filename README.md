@@ -13,3 +13,6 @@ CRUD 기능을 연습하고자 게시판을 만들었습니다.
 
 Database ERD
 ![ERD](https://user-images.githubusercontent.com/105612710/236618949-c879aade-50ab-44a5-9777-ef20a0505e30.png)
+
+
+5.8 추천과 조회수 작업 완료 
