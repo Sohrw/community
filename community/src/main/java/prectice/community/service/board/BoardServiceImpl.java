@@ -58,5 +58,9 @@ public class BoardServiceImpl implements BoardService{
         boardRepository.deleteById(boardId);
     }
 
-
+    public void addLike(Long boardId) {
+        Board board = boardRepository.findById(boardId).get();
+        int boardLike = board.getBoardLike() + 1;
+        board.setBoardLike(boardLike);
+    }
 }

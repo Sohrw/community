@@ -26,6 +26,7 @@ public class Reply {
     private String registerDate;
     private String updateDate;
     private String deleteDate;
+    private int replyLike;
 
     public Reply() {}
 

@@ -24,6 +24,7 @@ public class Rereply {
     private String registerDate;
     private String updateDate;
     private String deleteDate;
+    private int rereplyLike;
 
     public Rereply() {
     }

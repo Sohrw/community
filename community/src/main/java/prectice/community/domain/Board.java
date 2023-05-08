@@ -25,6 +25,9 @@ public class Board {
     private String registerDate;
     private String updateDate;
     private String deleteDate;
+    private int boardViewCount;
+    private int boardLike;
+
 
     @OneToMany(mappedBy = "board")
     @JsonIgnore
@@ -33,7 +36,7 @@ public class Board {
     public Board() {
     }
 
-    public Board(Long boardId, Member member, String title, String content, String registerDate, String updateDate, String deleteDate) {
+    public Board(Long boardId, Member member, String title, String content, String registerDate, String updateDate, String deleteDate, int like) {
         this.boardId = boardId;
         this.member = member;
         this.title = title;
@@ -41,5 +44,6 @@ public class Board {
         this.registerDate = registerDate;
         this.updateDate = updateDate;
         this.deleteDate = deleteDate;
+        this.boardLike = like;
     }
 }

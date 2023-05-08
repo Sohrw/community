@@ -69,6 +69,13 @@ public class BoardController {
         return "board";
     }
 
+    @PostMapping({"/{boardId}/boardLike"})
+    public String addBoardLike(@PathVariable long boardId) {
+        boardServiceImpl.addLike(boardId);
+
+        return "redirect:/{boardId}";
+    }
+
     @GetMapping("/add")
     public String writeForm(Model model) {
         BoardSearchCond boardSearchCond = new BoardSearchCond();

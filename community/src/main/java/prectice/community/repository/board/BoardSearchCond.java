@@ -14,6 +14,8 @@ public class BoardSearchCond {
     private String nickname;
 
     private String content;
+    private int boardLike;
+    private int boardViewCount;
 
     public BoardSearchCond() {
 
