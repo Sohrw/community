@@ -75,6 +75,20 @@
             </tbody>
         </table>
     </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:class="${boards.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number} - 1, size=${boards.size}, sort=${boards.sort})}">
+                    Previous
+                </a>
+            </li>
+            <li class="page-item" th:class="${boards.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number} + 1, size=${boards.size}, sort=${boards.sort})}">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
     <form th:action="@{/boards/logout}" method="post">
         <button class="w-100 btn btn-dark btn-lg" type="submit">
             로그아웃

@@ -1,6 +1,8 @@
 package prectice.community.service.board;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import prectice.community.domain.Board;
 import prectice.community.repository.board.BoardSearchCond;
 import prectice.community.repository.board.BoardUpdateDto;
@@ -16,7 +18,7 @@ public interface BoardService {
 
     Optional<Board> findById(Long id);
 
-    List<Board> findBoards(BoardSearchCond boardSearchCond);
+    Page<Board> findBoards(BoardSearchCond boardSearchCond, Pageable pageable);
 
     void delete(Long boardId);
 

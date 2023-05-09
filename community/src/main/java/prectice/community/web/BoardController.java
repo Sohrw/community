@@ -2,6 +2,10 @@ package prectice.community.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,11 +50,12 @@ public class BoardController {
 
 
     @GetMapping
-    public String boards(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute("boardSearch") BoardSearchCond boardSearchCond, Model model) {
-        List<Board> boards = boardService.findBoards(boardSearchCond);
+    public String boards(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute("boardSearch") BoardSearchCond boardSearchCond,
+                         Model model, @PageableDefault(size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
 
+        Page<Board> boardPage = boardService.findBoards(boardSearchCond, pageable);
         model.addAttribute("loginMember", loginMember);
-        model.addAttribute("boards", boards);
+        model.addAttribute("boards", boardPage);
         return "boards";
     }
 
@@ -71,8 +76,14 @@ public class BoardController {
     }
 
     @PostMapping({"/{boardId}/boardLike"})
-    public String addBoardLike(@PathVariable long boardId) {
-        boardServiceImpl.addLike(boardId);
+    public String addBoardLike(@PathVariable long boardId, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember
+    ,RedirectAttributes redirectAttributes) {
+        boolean isAlreadyLiked = boardServiceImpl.addLike(boardId, loginMember);
+        if (isAlreadyLiked) {
+            redirectAttributes.addFlashAttribute("errorMessage", "이미 좋아요를 누르셨습니다.");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "게시글을 좋아합니다!");
+        }
         boardServiceImpl.decreaseViewCount(boardId);
         return "redirect:/boards/{boardId}";
     }
