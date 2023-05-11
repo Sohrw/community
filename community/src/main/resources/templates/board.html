@@ -56,7 +56,7 @@
             <p th:text="${rereply.rereplyContent}">댓글 내용</p>
           </li>
         </ul>
-        <button class="reply-toggle-btn">대댓글 작성</button>
+        <button class="btn reply-toggle-btn">대댓글 작성</button>
         <form th:action="@{|/boards/${boardId}/reply/${reply.replyId}/rereply|}" th:object="${rereplyForm}" method="post" class="ml-3 mt-3" style="display: none">
           <!-- 대댓글 작성 폼 -->
           <div class="form-group">
@@ -121,6 +121,8 @@
       }
     });
   });
+
+
 </script>
 </body>
 </html>

@@ -51,7 +51,7 @@ public class BoardController {
 
     @GetMapping
     public String boards(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute("boardSearch") BoardSearchCond boardSearchCond,
-                         Model model, @PageableDefault(size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
+                         Model model, @PageableDefault(size = 5, sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Board> boardPage = boardService.findBoards(boardSearchCond, pageable);
         model.addAttribute("loginMember", loginMember);
@@ -119,11 +119,14 @@ public class BoardController {
 
     @GetMapping("/{boardId}/edit")
     public String editForm(@PathVariable Long boardId, Model model,
-                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember
+    , HttpServletRequest request) {
+
 
 
         Board board = boardServiceImpl.findById(boardId).get();
         if (loginMember.getMemberId() != board.getMember().getMemberId()) {
+            model.addAttribute("msg", "수정 권한이 없습니다.");
             return "redirect:/error/403";
         }
         model.addAttribute("board", board);

@@ -75,20 +75,55 @@
             </tbody>
         </table>
     </div>
-    <nav>
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:class="${boards.first ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number} - 1, size=${boards.size}, sort=${boards.sort})}">
-                    Previous
-                </a>
-            </li>
-            <li class="page-item" th:class="${boards.last ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number} + 1, size=${boards.size}, sort=${boards.sort})}">
-                    Next
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <div th:if="${boards.totalPages > 1}">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li th:classappend="${boards.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=0, size=${boards.size})}">
+                        First
+                    </a>
+                </li>
+                <li th:classappend="${boards.hasPrevious} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number - 1}, size=${boards.size})}">
+                        Previous
+                    </a>
+                </li>
+                <li th:each="page : ${#numbers.sequence(0, boards.totalPages - 1)}" th:classappend="${page == boards.number} ? 'active'">
+                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${page}, size=${boards.size})}">
+                        <span th:text="${page + 1}"></span>
+                    </a>
+                </li>
+                <li th:classappend="${boards.hasNext} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number + 1}, size=${boards.size})}">
+                        Next
+                    </a>
+                </li>
+                <li th:classappend="${boards.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.totalPages - 1}, size=${boards.size})}">
+                        Last
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+
+    <!--    <nav>-->
+<!--        <ul class="pagination justify-content-center"-->
+<!--            th:with="">-->
+<!--            <li class="page-item" th:class="${boards.first ? 'disabled' : ''}">-->
+<!--                <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number} - 1, size=${boards.size})}">-->
+<!--                    Previous-->
+<!--                </a>-->
+<!--            </li>-->
+<!--            <li class="page-item" th:class="${boards.last ? 'disabled' : ''}">-->
+<!--                <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(page=${boards.number} + 1, size=${boards.size})}">-->
+<!--                    Next-->
+<!--                </a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </nav> -->
     <form th:action="@{/boards/logout}" method="post">
         <button class="w-100 btn btn-dark btn-lg" type="submit">
             로그아웃
