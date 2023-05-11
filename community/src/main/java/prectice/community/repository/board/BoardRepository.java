@@ -20,8 +20,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findByTitleContaining(String title, Pageable pageable);
 
-    Page<Board> findByContentContaining(String content, Pageable pageable);
-
+    Page<Board> findByMember_Nickname(String nickname, Pageable pageable);
     Page<Board> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);
 
 }

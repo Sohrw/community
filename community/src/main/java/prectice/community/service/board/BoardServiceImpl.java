@@ -67,8 +67,8 @@ public class BoardServiceImpl implements BoardService{
             return boardRepository.findByTitleContainingOrContentContaining(boardSearchCond.getTitle(), boardSearchCond.getContent(), pageable);
         } else if (StringUtils.hasText(boardSearchCond.getTitle())) {
             return boardRepository.findByTitleContaining(boardSearchCond.getTitle(), pageable);
-        } else if (StringUtils.hasText(boardSearchCond.getContent())) {
-            return boardRepository.findByContentContaining(boardSearchCond.getContent(), pageable);
+        } else if (StringUtils.hasText(boardSearchCond.getNickname())) {
+            return boardRepository.findByMember_Nickname(boardSearchCond.getNickname(), pageable);
         } else {
             return boardRepository.findAll(pageable);
         }

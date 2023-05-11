@@ -25,6 +25,7 @@
     <div >
       <label th:for="title"></label>
       <input type="text" th:field="*{title}" id="title" name="title" class="form-control">
+      <div class="field-error" th:errors="*{title}" />
     </div>
 
     <div class="h-75">

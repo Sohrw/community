@@ -24,7 +24,9 @@
   <form action="board.html" th:action method="post" th:object="${board}" onsubmit="saveContent(); return false;">
     <div >
       <label th:for="title"></label>
+
       <input type="text" th:field="*{title}" id="title" name="title" class="form-control" th:value="${board.title}">
+      <div class="field-error" th:errors="*{title}" />
     </div>
 
     <div class="h-75">
