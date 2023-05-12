@@ -51,7 +51,7 @@ public class BoardController {
 
     @GetMapping
     public String boards(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, @ModelAttribute("boardSearch") BoardSearchCond boardSearchCond,
-                         Model model, @PageableDefault(size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
+                         Model model, @PageableDefault(size = 5, direction = Sort.Direction.DESC, sort = "boardId") Pageable pageable) {
 
         Page<Board> boardPage = boardService.findBoards(boardSearchCond, pageable);
         model.addAttribute("loginMember", loginMember);
